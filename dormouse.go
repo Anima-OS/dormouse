@@ -25,4 +25,17 @@ func main() {
 		escape +
 		"[?1155" +
 		"l"))
+
+	render("<b>HELLO WORLD!</b>")
+	render("<b style='color:red;'>HELLO ANOTHER WORLD!</b>")
+}
+
+func render(HTML string) {
+	os.Stdout.Write([]byte(escape +
+		"[?1155;" + termcookie +
+		"h" +
+		HTML +
+		escape +
+		"[?1155" +
+		"l"))
 }
