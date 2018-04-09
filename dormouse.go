@@ -6,7 +6,10 @@
 
 package dormouse
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 const escape = "\033"
 const code = "1155"
@@ -26,27 +29,82 @@ func main() {
 		"[?1155" +
 		"l"))
 
-	render("<b>HELLO WORLD!</b>")
-	render("<b style='color:red;'>HELLO ANOTHER WORLD!</b>")
+	Render("<b>HELLO WORLD!</b>")
+	Render("<b style='color:red;'>HELLO ANOTHER WORLD!</b>")
 }
 
 // Render HTML to output (internal function).
-func render(HTML string) {
-	os.Stdout.Write([]byte(escape +
-		"[?1155;" + termcookie +
-		"h" +
-		HTML +
-		escape +
-		"[?1155" +
-		"l"))
+func Render(HTML string) {
+
+	input := fmt.Sprintf(escape+
+		"[?1155;%s"+
+		"h"+
+		HTML+
+		escape+
+		"[?1155"+
+		"l", termcookie)
+
+	os.Stdout.Write([]byte(input))
 }
 
-// DisplayImage renders blockimage to terminal.
+// DisplayImage renders blockimages to the terminal.
 func DisplayImage(URL string) {
 
-	HTML := "<img src='" +
+	HTML := "<img class='gterm-blockimg'  src='" +
 		URL +
 		"'"
 
-	render(HTML)
+	Render(HTML)
+}
+
+// DisplayVideo renders video frames to the terminal/embeds them in the terminal's media player.
+func DisplayVideo(URL string) {}
+
+// DisplayText renders stylized text to the terminal (Font ought to be an enumarable list. Color/Size should be optional).
+func DisplayText(Text string, Font string, FontSize int, Color string) {
+	HTML := fmt.Sprintf("<span style='font-size:%dpx;'>"+
+		"%s"+
+		"</span", FontSize, Text)
+
+	Render(HTML)
+}
+
+// DisplayPDF renders the contents of a PDF to the terminal/the terminal's PDF reader.
+func DisplayPDF(URL string) {}
+
+// DisplayEmoji renders emojis to the terminal (Emoji ought to be an enumarable list. Size should be optional + int).
+func DisplayEmoji(Emoji emoji, Size int) {
+
+	HTML := fmt.Sprintf("<span style='font-size:%dpx;' class='emoji'>"+
+		"%s"+
+		"</span", Size, Emoji.Name)
+
+	Render(HTML)
+}
+
+// DisplayFrame renders iFrames and their embedded contents to the terminal.
+func DisplayFrame(URL string) {}
+
+// DisplayDialog renders a dialog the terminal (Type ought to be an eunamarable list of all basic HTML dialog types + the basic Anima overlay as 0)
+// Make sure there can only ever be one dialog open at a time.
+func DisplayDialog(Type string) {}
+
+// DisplaySyntax renders input as syntax highlighted code.
+func DisplaySyntax(Code string, Language string) {}
+
+// DisplayHotlink renders a clickable hotlink to the terminal (DisplayName should be optional).
+func DisplayHotlink(URL string, DisplayName string) {
+
+	HTML := "<a href='" +
+		URL + "'>" +
+		DisplayName +
+		"</a>"
+
+	Render(HTML)
+}
+
+// DisplayHTML renders arbitrary HTML to the terminal.
+func DisplayHTML(HTML string) {
+
+	Render(HTML)
 }
